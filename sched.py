@@ -3,21 +3,11 @@ Scheduling algorithm implementation
 Ben Rodford
 April 2019
 '''
-
-'''
-node v1:
-    data
-    outbound edges
-        (v2, capacity, flow)
-    inbound edges
-        (v0, capacity)?
-        used for residual graph
-'''
-
+import collections
+import csv
 
 # https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
 
-import collections
  
 # This class represents a directed graph using adjacency matrix representation
 class Graph:
@@ -118,6 +108,29 @@ def max_flow_edges(edges):
 
     return max_flow_edges
 
+'''
+expects a csv file
+'''
+def avail_from_file(filename):
+    with open(filename, 'r') as filein:
+        lines = csv.reader(filein)
+        
+        for line in lines:
+            for i in line:
+                print(i, type(i))
+
+
+'''
+avail should be a list of tuples formatted:
+    (name, (locations,), (times,))
+    where locations and times are tuples of (0 or 1) booleans
+'''
+def avail_to_edges(avail):
+    pass
+
+
+def edges_to_avail(edges):
+    pass
 
 
 # (u, v, capacity)
@@ -130,8 +143,9 @@ edges = [
         ]
 
 
-print(max_flow_edges(edges))
+avail_from_file('avail.csv')
 
 
 
+#print(max_flow_edges(edges))
 
