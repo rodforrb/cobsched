@@ -73,7 +73,7 @@
     }
 
     th {
-        border-spacing: 20px;
+        border-spacing: 10px;
         padding: 10px;
     }
 
@@ -81,9 +81,26 @@
 </head>
 
 <body>
-<form>
+<form method="post" action="./submit_form">
   <div>
     <table>
+      <tr>
+        <td>Name:</td>
+        <td colspan="3"><input type=text id="name"></td>
+      </tr>
+
+      <tr>
+        <th>Location</td>
+        <th>Aldershot</td>
+        <th>Tansley</td>
+        <th>Centennial</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input type=checkbox class=location id="Aldershot"></td>
+        <td><input type=checkbox class=location id="Tansley"></td>
+        <td><input type=checkbox class=location id="Centennial"></td>
+      <tr></tr>
       <tr>
         <th></th>
 
@@ -131,6 +148,9 @@
         <td><input type=checkbox class=Friday></td>
         <td><input type=checkbox class=Saturday></td>
         <td><input type=checkbox class=Sunday></td>
+      </tr>
+      <tr>
+        <td><button id="submit">Submit</button></td>
       </tr>
     </table>
   </div>    
