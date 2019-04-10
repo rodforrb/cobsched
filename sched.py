@@ -103,6 +103,23 @@ def edges_to_graph(edges, size):
 
     return graph
 
+def max_flow_edges(edges):
+    # highest numbered node
+    size = max(edges, key=lambda e: e[1])[1] + 1
+    
+    G = Graph(edges_to_graph(edges, size))
+
+    G.EdmondsKarp(0, 3)
+    residual = G.graph
+
+    max_flow_edges = []
+    for u,v,c in edges:
+        max_flow_edges.append( (u, v, residual[v][u]) )
+
+    return max_flow_edges
+
+
+
 # (u, v, capacity)
 edges = [ 
         (0, 1, 20),
@@ -112,23 +129,8 @@ edges = [
         (2, 3, 20)
         ]
 
-# highest numbered node
-size = max(edges, key=lambda e: e[1])[1] + 1
 
-g = edges_to_graph(edges, size)
-
-print(g)
-
-G = Graph(g)
-
-G.EdmondsKarp(0, 3)
-residual = G.graph
-
-max_flow_edges = []
-for u,v,c in edges:
-    max_flow_edges.append( (u, v, residual[v][u]) )
-
-print(max_flow_edges)
+print(max_flow_edges(edges))
 
 
 
