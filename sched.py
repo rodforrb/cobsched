@@ -122,13 +122,46 @@ def avail_from_file(filename):
 
 '''
 avail should be a list of tuples formatted:
-    (name, (locations,), (times,))
-    where locations and times are tuples of (0 or 1) booleans
+    (name, (locations,), (days,))
+    where locations and days are tuples of (0 or 1) booleans
+    days is made of 7 3-tuples representing availability for
+        morning/daytime/evening for each day
 '''
 def avail_to_edges(avail):
+    # a set of (u, v, capacity)
+    # name becomes u
+    # every timeslot becomes separate v
+    # name -> slot capacities = 1 TODO number of hours?
+    # source -> name capacities = max allocation per person
+    # slot -> sink capacities = inf
+    edges = []
+
+    # source node is 0
+    # sink node is 1
+    # remaining nodes start at 2
+    node_index = 2
+
+    name_to_node = {}
+    node_to_name = {}
+
+    for name, locations, days in avail:
+        if name not in name_to_node.keys():
+            # person has no edges yet
+            name_to_node[name] = node_index
+            node_index += 1
+
+            #edges.append(name_to_node[name], #TODO hours
+
+        for l in locations:
+            for d in days:
+                for timeslot in d:
+                    #TODO make node for d
+                    #edges.append(u,v,c)
+        edges.append()
+        
     pass
 
-
+# reverse the conversion
 def edges_to_avail(edges):
     pass
 
@@ -141,9 +174,6 @@ edges = [
         (1, 3, 10),
         (2, 3, 20)
         ]
-
-
-avail_from_file('avail.csv')
 
 
 
