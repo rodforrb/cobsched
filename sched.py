@@ -128,7 +128,7 @@ avail should be a list of tuples formatted:
         morning/daytime/evening for each day
 '''
 def avail_to_edges(avail):
-    # a set of (u, v, capacity)
+    # edges is a list of (u, v, capacity) tuples
     # name becomes u
     # every timeslot becomes separate v
     # name -> slot capacities = 1 TODO number of hours?
@@ -144,20 +144,22 @@ def avail_to_edges(avail):
     name_to_node = {}
     node_to_name = {}
 
-    for name, locations, days in avail:
+    for name, hours, locations, days in avail:
         if name not in name_to_node.keys():
-            # person has no edges yet
+            # person has no node yet so make them one
             name_to_node[name] = node_index
+            node_to_name[node_index] = name
             node_index += 1
 
             #edges.append(name_to_node[name], #TODO hours
 
         for l in locations:
             for d in days:
-                for timeslot in d:
+                for time in d:
                     #TODO make node for d
-                    #edges.append(u,v,c)
-        edges.append()
+                    edges.append( (name_to_node[name],
+                                   name_to_node[
+        #edges.append()
         
     pass
 
