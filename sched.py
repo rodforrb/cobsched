@@ -112,22 +112,27 @@ def max_flow_edges(edges):
 expects a csv file
 '''
 def avail_from_file(filename):
+    avail = []
     with open(filename, 'r') as filein:
         lines = csv.reader(filein)
-        
-        for line in lines:
-            for i in line:
-                print(i, type(i))
 
+        # skip the header
+        lines.__next__()
+        for line in lines:
+            avail.append( (line[0],
+                           line[1],
+                           (line[2:5]),
+                           (line[5:])))
+    return avail
 
 '''
 avail should be a list of tuples formatted:
-    (name, (locations,), (days,))
+    (name, hours, (locations,), (days,))
     where locations and days are tuples of (0 or 1) booleans
     days is made of 7 3-tuples representing availability for
         morning/daytime/evening for each day
 '''
-def avail_to_edges(avail):
+def create_graph(avail): # TODO 
     # edges is a list of (u, v, capacity) tuples
     # name becomes u
     # every timeslot becomes separate v
@@ -153,12 +158,12 @@ def avail_to_edges(avail):
 
             #edges.append(name_to_node[name], #TODO hours
 
-        for l in locations:
-            for d in days:
-                for time in d:
-                    #TODO make node for d
-                    edges.append( (name_to_node[name],
-                                   name_to_node[
+     #   for l in locations:
+    #        for d in days:
+   #             for time in d:
+  #                  #TODO make node for d
+ #                   edges.append( (name_to_node[name],
+#                                   name_to_node[
         #edges.append()
         
     pass
@@ -167,17 +172,7 @@ def avail_to_edges(avail):
 def edges_to_avail(edges):
     pass
 
-
-# (u, v, capacity)
-edges = [ 
-        (0, 1, 20),
-        (0, 2, 10),
-        (1, 2, 20),
-        (1, 3, 10),
-        (2, 3, 20)
-        ]
-
-
-
+avail = avail_from_file("avail.csv")
+edges = avail_to_edges(avail)
 #print(max_flow_edges(edges))
 
