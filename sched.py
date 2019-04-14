@@ -6,6 +6,8 @@ April 2019
 import collections
 import csv
 from dataclasses import dataclass
+from collections import defaultdict
+
 
 # https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
 
@@ -179,17 +181,21 @@ def run_graph(avail, shifts): # TODO
 
     name_to_node = {}
     node_to_name = {}
+    node_to_shift = {}
 
+    # reducing the problem to a flow diagram
+    # adding shift nodes and edges
     for s in shifts:
         if s.timeslot not in name_to_node:
             name_to_node[s.timeslot] = node_index
-            node_to_name[node_index] = s.timeslot
+            node_to_shift[node_index] = s.timeslot
 
         # attach timeslot to sink
-        edges.append((name_to_node[s.timeslot], 1, s.staff))
+        edges.append((name_to_node[s.timeslot], 1, int(s.staff)))
 
         node_index += 1 
 
+    # adding person nodes and edges
     for person in avail:
         # person has no node yet so make them one
         name_to_node[person.name] = node_index
@@ -203,20 +209,34 @@ def run_graph(avail, shifts): # TODO
 
         node_index += 1
 
-    print(edges)
+    # solve the flow diagram
+    max_flow = max_flow_edges(edges)
 
+    # un-reducing back to a schedule
+    schedule = defaultdict(list)
+    for u,v,c in max_flow:
+        # check if node is a person
+        if u in node_to_name:
+            # check if person is assigned to shift
+            if c > 0:
+                #schedule[node_to_name[u]].append(node_to_shift[v])
+                schedule[node_to_shift[v]].append(node_to_name[u])
+    
+    return schedule
 
-
-
-# reverse the conversion
-def edges_to_avail(edges):
-    pass
-
+def schedule_to_file(schedule, filename):
+    with open(filename, 'w') as fileout:
+        for shift in schedule:
+            lineout = shift + ','
+            for person in schedule[shift]:
+                lineout += '%s,' % person
+            fileout.write(lineout + '\n')
 
 avail = avail_from_file("avail.csv")
 shifts = shifts_from_file("shifts.csv")
 
 schedule = run_graph(avail, shifts)
 
-#print(max_flow_edges(edges))
+print(schedule)
 
+schedule_to_file(schedule, "schedule.csv")
