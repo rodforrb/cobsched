@@ -226,11 +226,29 @@ def run_graph(avail, shifts): # TODO
 
 def schedule_to_file(schedule, filename):
     with open(filename, 'w') as fileout:
-        for shift in schedule:
-            lineout = shift + ','
-            for person in schedule[shift]:
-                lineout += '%s,' % person
-            fileout.write(lineout + '\n')
+        lines = []
+        writer = csv.writer(fileout)
+        for location in ('Ald', 'Tans', 'Cent'):
+            for day in ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'):
+                for time in (1, 2, 3):
+                    timeslot = location+str(time)+day
+
+'''
+writes a list by column
+matrix - 2d list
+lst - 1d input list
+col - column number
+returns number of rows written
+'''
+def write_column(matrix, lst, col):
+
+
+#        for shift in schedule:
+#            lineout = shift + ','
+#            for person in schedule[shift]:
+#                lineout += '%s,' % person
+#            fileout.write(lineout + '\n')
+        
 
 avail = avail_from_file("avail.csv")
 shifts = shifts_from_file("shifts.csv")
