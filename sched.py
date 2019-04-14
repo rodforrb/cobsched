@@ -158,13 +158,13 @@ def create_graph(avail): # TODO
 
             #edges.append(name_to_node[name], #TODO hours
 
-     #   for l in locations:
+    #    for l in locations:
     #        for d in days:
-   #             for time in d:
-  #                  #TODO make node for d
- #                   edges.append( (name_to_node[name],
-#                                   name_to_node[
-        #edges.append()
+    #            for time in d:
+    #                #TODO make node for d
+    #                edges.append( (name_to_node[name],
+    #                               name_to_node[
+    #     edges.append()
         
     pass
 
@@ -174,5 +174,7 @@ def edges_to_avail(edges):
 
 avail = avail_from_file("avail.csv")
 edges = avail_to_edges(avail)
+
+
 #print(max_flow_edges(edges))
 
