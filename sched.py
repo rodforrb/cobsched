@@ -5,6 +5,7 @@ April 2019
 '''
 import collections
 import csv
+from dataclasses import dataclass
 
 # https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
 
@@ -81,6 +82,17 @@ class Graph:
  
         return max_flow
 
+@dataclass
+class Avail:
+    name : str
+    hours : int
+    timeslots : tuple
+
+@dataclass
+class Shift:
+    # specific to time and location
+    timeslot : str
+    staff : int
 
 def edges_to_graph(edges, size):
     
@@ -99,7 +111,7 @@ def max_flow_edges(edges):
     
     G = Graph(edges_to_graph(edges, size))
 
-    G.EdmondsKarp(0, 3)
+    G.EdmondsKarp(0, 1)
     residual = G.graph
 
     max_flow_edges = []
@@ -116,23 +128,42 @@ def avail_from_file(filename):
     with open(filename, 'r') as filein:
         lines = csv.reader(filein)
 
-        # skip the header
-        lines.__next__()
+        titles = lines.__next__()
         for line in lines:
-            avail.append( (line[0],
-                           line[1],
-                           (line[2:5]),
-                           (line[5:])))
+
+            ts = [] # timeslots
+            for l, location in enumerate(line[2:5]):
+                if location == "1":
+                    for t, timeslot in enumerate(line[5:]):
+                        if timeslot == "1":
+                            ts.append(titles[l+2] + titles[t+5])
+
+
+            avail.append(Avail(line[0],  # name
+                           int(line[1]), # hours
+                           ts.copy()))   # timeslots
     return avail
 
+def shifts_from_file(filename):
+    shifts = []
+
+    with open(filename, 'r') as filein:
+            lines = csv.reader(filein)
+            titles = lines.__next__()[1:]
+
+            for line in lines:
+                for i, staff in enumerate(line[1:]):
+                    shifts.append(Shift(line[0]+titles[i], staff))
+    return shifts
+
 '''
-avail should be a list of tuples formatted:
-    (name, hours, (locations,), (days,))
+avail is of type Avail as defined above
     where locations and days are tuples of (0 or 1) booleans
     days is made of 7 3-tuples representing availability for
         morning/daytime/evening for each day
+shifts is of type Shifts
 '''
-def create_graph(avail): # TODO 
+def run_graph(avail, shifts): # TODO 
     # edges is a list of (u, v, capacity) tuples
     # name becomes u
     # every timeslot becomes separate v
@@ -149,32 +180,43 @@ def create_graph(avail): # TODO
     name_to_node = {}
     node_to_name = {}
 
-    for name, hours, locations, days in avail:
-        if name not in name_to_node.keys():
-            # person has no node yet so make them one
-            name_to_node[name] = node_index
-            node_to_name[node_index] = name
-            node_index += 1
+    for s in shifts:
+        if s.timeslot not in name_to_node:
+            name_to_node[s.timeslot] = node_index
+            node_to_name[node_index] = s.timeslot
 
-            #edges.append(name_to_node[name], #TODO hours
+        # attach timeslot to sink
+        edges.append((name_to_node[s.timeslot], 1, s.staff))
 
-    #    for l in locations:
-    #        for d in days:
-    #            for time in d:
-    #                #TODO make node for d
-    #                edges.append( (name_to_node[name],
-    #                               name_to_node[
-    #     edges.append()
-        
-    pass
+        node_index += 1 
+
+    for person in avail:
+        # person has no node yet so make them one
+        name_to_node[person.name] = node_index
+        node_to_name[node_index] = person.name
+        # attach source to person
+        edges.append((0, name_to_node[person.name], int(person.hours)))
+
+        for ts in person.timeslots:
+            # attach person to timeslot
+            edges.append((node_index, name_to_node[ts], 1))
+
+        node_index += 1
+
+    print(edges)
+
+
+
 
 # reverse the conversion
 def edges_to_avail(edges):
     pass
 
-avail = avail_from_file("avail.csv")
-edges = avail_to_edges(avail)
 
+avail = avail_from_file("avail.csv")
+shifts = shifts_from_file("shifts.csv")
+
+schedule = run_graph(avail, shifts)
 
 #print(max_flow_edges(edges))
 
