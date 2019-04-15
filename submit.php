@@ -1,36 +1,4 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $line = "";
-    $line += clean($_POST["name"]) + ',';
-    $line += clean($_POST["hours"]) + ',';
-
-    $line += clean($_POST["Mon1"]) + ',';
-    $line += clean($_POST["Tue1"]) + ',';
-    $line += clean($_POST["Wed1"]) + ',';
-    $line += clean($_POST["Thu1"]) + ',';
-    $line += clean($_POST["Fri1"]) + ',';
-    $line += clean($_POST["Sat1"]) + ',';
-    $line += clean($_POST["Sun1"]) + ',';
-    $line += clean($_POST["Mon2"]) + ',';
-    $line += clean($_POST["Tue2"]) + ',';
-    $line += clean($_POST["Wed2"]) + ',';
-    $line += clean($_POST["Thu2"]) + ',';
-    $line += clean($_POST["Fri2"]) + ',';
-    $line += clean($_POST["Sat2"]) + ',';
-    $line += clean($_POST["Sun2"]) + ',';
-    $line += clean($_POST["Mon3"]) + ',';
-    $line += clean($_POST["Tue3"]) + ',';
-    $line += clean($_POST["Wed3"]) + ',';
-    $line += clean($_POST["Thu3"]) + ',';
-    $line += clean($_POST["Fri3"]) + ',';
-    $line += clean($_POST["Sat3"]) + ',';
-    $line += clean($_POST["Sun3"]);
-
-
-    $fileout = fopen("avail_submits.csv", "a") or die("Unable to open file!");
-    fwrite($fileout, "\n". $line);
-    fclose($fileout);
-  }
 
 function clean($data) {
     $data = trim($data);
@@ -38,5 +6,54 @@ function clean($data) {
     $data = htmlspecialchars($data);
     return $data;
   }
+
+function check_get($name) {
+	if (isset($_POST[$name])) {
+		return '1,';
+	} else {
+		return '0,';
+	}
+}
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $line = "";
+    $line = $line . (clean($_POST["name"] . ','));
+    
+    $line = $line . (clean($_POST["hours"] . ','));
+
+    $line = $line . check_get("Aldershot");
+    $line = $line . check_get("Tansley");
+    $line = $line . check_get("Centennial");
+
+    $line = $line . check_get("Mon1");
+    $line = $line . check_get("Mon2");
+    $line = $line . check_get("Mon3");
+    $line = $line . check_get("Tue1");
+    $line = $line . check_get("Tue2");
+    $line = $line . check_get("Tue3");
+    $line = $line . check_get("Wed1");
+    $line = $line . check_get("Wed2");
+    $line = $line . check_get("Wed3");
+    $line = $line . check_get("Thu1");
+    $line = $line . check_get("Thu2");
+    $line = $line . check_get("Thu3");
+    $line = $line . check_get("Fri1");
+    $line = $line . check_get("Fri2");
+    $line = $line . check_get("Fri3");
+    $line = $line . check_get("Sat1");
+    $line = $line . check_get("Sat2");
+    $line = $line . check_get("Sat3");
+    $line = $line . check_get("Sun1");
+    $line = $line . check_get("Sun2");
+    $line = $line . check_get("Sun3");
+
+    $fileout = fopen("submissions.csv", "a") or die("Unable to open file!");
+    fwrite($fileout, "\n".$line);
+    fclose($fileout);
+
+    echo("Saved.\n");
+  }
+
 ?>
 

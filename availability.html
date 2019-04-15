@@ -42,11 +42,11 @@
       height: 30px;
     }
 
-    input[id="name"]{
+    input[name="name"]{
       width: 20em;
     }
 
-    input[id="hours"]{
+    input[name="hours"]{
       width: 3em;
     }
 
@@ -97,18 +97,18 @@
 </head>
 
 <body>
-<form method="post" action="./submit.php">
+<form method="POST" action="./submit.php">
   <div>
     <table>
       <tr>
         <td style="padding: 0.5em">Name:</td>
-        <td colspan=2 width=0%><input type=text id="name"></td>
+        <td colspan=2 width=0%><input type=text name="name" required="required"></td>
         <td width=100%></td>
       </tr>
       <tr height=6px></tr>
       <tr>
         <td style="padding: 0.5em">Hours:</td>
-        <td width=35px><input type=text id="hours"></td>
+        <td width=35px><input type=text name="hours" required="required"></td>
         <td colspan=2 width=100%></td>
       </tr>
     </table>
@@ -123,9 +123,9 @@
       </tr>
       <tr>
         <td></td>
-        <td><input type=checkbox class=location id="Aldershot"></td>
-        <td><input type=checkbox class=location id="Tansley"></td>
-        <td><input type=checkbox class=location id="Centennial"></td>
+        <td><input type=checkbox class=location name="Aldershot"></td>
+        <td><input type=checkbox class=location name="Tansley"></td>
+        <td><input type=checkbox class=location name="Centennial"></td>
       <tr></tr>
       <tr>
         <th></th>
@@ -144,33 +144,33 @@
 
       <tr>
         <th>Morning</th>
-        <td><input type=checkbox name=Mon1></td>
-        <td><input type=checkbox name=Tue1></td>
-        <td><input type=checkbox name=Wed1></td>
-        <td><input type=checkbox name=Thu1></td>
-        <td><input type=checkbox name=Fri1></td>
-        <td><input type=checkbox name=Sat1></td>
-        <td><input type=checkbox name=Sun1></td>
+        <td><input type=checkbox name="Mon1"></td>
+        <td><input type=checkbox name="Tue1"></td>
+        <td><input type=checkbox name="Wed1"></td>
+        <td><input type=checkbox name="Thu1"></td>
+        <td><input type=checkbox name="Fri1"></td>
+        <td><input type=checkbox name="Sat1"></td>
+        <td><input type=checkbox name="Sun1"></td>
       </tr>
       <tr>
         <th>Daytime</th>
-        <td><input type=checkbox name=Mon2></td>
-        <td><input type=checkbox name=Tue2></td>
-        <td><input type=checkbox name=Wed2></td>
-        <td><input type=checkbox name=Thu2></td>
-        <td><input type=checkbox name=Fri2></td>
-        <td><input type=checkbox name=Sat2></td>
-        <td><input type=checkbox name=Sun2></td>
+        <td><input type=checkbox name="Mon2"></td>
+        <td><input type=checkbox name="Tue2"></td>
+        <td><input type=checkbox name="Wed2"></td>
+        <td><input type=checkbox name="Thu2"></td>
+        <td><input type=checkbox name="Fri2"></td>
+        <td><input type=checkbox name="Sat2"></td>
+        <td><input type=checkbox name="Sun2"></td>
       </tr>
       <tr>
         <th>Evening</th>
-        <td><input type=checkbox name=Mon3></td>
-        <td><input type=checkbox name=Tue3></td>
-        <td><input type=checkbox name=Wed3></td>
-        <td><input type=checkbox name=Thu3></td>
-        <td><input type=checkbox name=Fri3></td>
-        <td><input type=checkbox name=Sat3></td>
-        <td><input type=checkbox name=Sun3></td>
+        <td><input type=checkbox name="Mon3"></td>
+        <td><input type=checkbox name="Tue3"></td>
+        <td><input type=checkbox name="Wed3"></td>
+        <td><input type=checkbox name="Thu3"></td>
+        <td><input type=checkbox name="Fri3"></td>
+        <td><input type=checkbox name="Sat3"></td>
+        <td><input type=checkbox name="Sun3"></td>
       </tr>
     </table>
   </div>  
