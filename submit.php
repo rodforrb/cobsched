@@ -48,11 +48,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $line = $line . check_get("Sun2");
     $line = $line . check_get("Sun3");
 
-    $fileout = fopen("submissions.csv", "a") or die("Unable to open file!");
+    $fileout = fopen(".submissions.csv", "a") or die("Unable to open file!");
     fwrite($fileout, "\n".$line);
     fclose($fileout);
 
     echo("Saved.\n");
+    header("location:./submitted.html");
   }
 
 ?>
