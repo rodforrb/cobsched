@@ -7,6 +7,7 @@ import collections
 import csv
 from dataclasses import dataclass
 from collections import defaultdict
+from random import shuffle
 
 
 # https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
@@ -139,11 +140,10 @@ def avail_from_file(filename):
                     for t, timeslot in enumerate(line[5:]):
                         if timeslot == "1":
                             ts.append(titles[l+2] + titles[t+5])
-
-
-            avail.append(Avail(line[0],  # name
-                           int(line[1]), # hours
-                           ts.copy()))   # timeslots
+            shuffle(ts)
+            avail.append(Avail(line[0],     # name
+                           int(line[1]),    # hours
+                           ts.copy()))      # randomized timeslots
     return avail
 
 def shifts_from_file(filename):
@@ -165,11 +165,11 @@ avail is of type Avail as defined above
         morning/daytime/evening for each day
 shifts is of type Shifts
 '''
-def run_graph(avail, shifts): # TODO 
-    # edges is a list of (u, v, capacity) tuples
+def run_graph(avail, shifts):
+    # edges is a list of (u, v, capacity) tuples, derived as follows:
     # name becomes u
-    # every timeslot becomes separate v
-    # name -> slot capacities = 1 TODO number of hours?
+    # every timeslot becomes a separate v
+    # name -> slot capacities = 1 # TODO could do number of hours?
     # source -> name capacities = max allocation per person
     # slot -> sink capacities = inf
     edges = []
@@ -209,7 +209,7 @@ def run_graph(avail, shifts): # TODO
 
         node_index += 1
 
-    # solve the flow diagram
+    # solve the flow network
     max_flow = max_flow_edges(edges)
 
     # un-reducing back to a schedule
@@ -217,38 +217,59 @@ def run_graph(avail, shifts): # TODO
     for u,v,c in max_flow:
         # check if node is a person
         if u in node_to_name:
-            # check if person is assigned to shift
+            # check if person is assigned to that shift
             if c > 0:
-                #schedule[node_to_name[u]].append(node_to_shift[v])
-                schedule[node_to_shift[v]].append(node_to_name[u])
+                #schedule[node_to_name[u]].append(node_to_shift[v]) # {person : [shifts]}
+                schedule[node_to_shift[v]].append(node_to_name[u]) # {shift : [people]}
     
     return schedule
 
 def schedule_to_file(schedule, filename):
+    # minimum lines for times
+    padding = (6, 6, 6)
     with open(filename, 'w') as fileout:
+        # columns are going to be written horizontally, then transposed
         lines = []
-        writer = csv.writer(fileout)
         for location in ('Ald', 'Tans', 'Cent'):
+            lines.append([location])
             for day in ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'):
+                line = [day]
                 for time in (1, 2, 3):
+                    line.append(['Morning', 'Daytime', 'Evening'][time-1])
+
                     timeslot = location+str(time)+day
+                    rows = 0
+                    for person in schedule[timeslot]:
+                        line.append(person)
+                        rows += 1
 
-'''
-writes a list by column
-matrix - 2d list
-lst - 1d input list
-col - column number
-returns number of rows written
-'''
-def write_column(matrix, lst, col):
+                    while rows < padding[time-1]:
+                        line.append('')
+                        rows += 1
+
+                    # minimum 1 empty line
+                    line.append('')
+
+                lines.append(line)
+
+        # transpose the 2d list/matrix and write
+        # the width becomes the number of lines
+        width = len(max(lines, key=len))
+        print("width:", width)
+
+        for i in range(width):
+
+            for j in range(len(lines)):
+                # the row still has elements to add
+                if i < len(lines[j]):
+                    fileout.write(lines[j][i] + ',')
+                else:
+                    # otherwise we need to pad the column
+                    fileout.write(',')
 
 
-#        for shift in schedule:
-#            lineout = shift + ','
-#            for person in schedule[shift]:
-#                lineout += '%s,' % person
-#            fileout.write(lineout + '\n')
-        
+            fileout.write('\n')
+
 
 avail = avail_from_file("avail.csv")
 shifts = shifts_from_file("shifts.csv")
