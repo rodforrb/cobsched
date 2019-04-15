@@ -18,7 +18,9 @@ function check_get($name) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $line = "";
-    $line = $line . (clean($_POST["name"] . ','));
+    $line = $line . (clean($_POST["firstname"]));
+    $line = $line . " ";
+    $line = $line . (clean($_POST["lastname"] . ','));
     
     $line = $line . (clean($_POST["hours"] . ','));
 
@@ -49,10 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $line = $line . check_get("Sun3");
 
     $fileout = fopen(".submissions.csv", "a") or die("Unable to open file!");
-    fwrite($fileout, "\n".$line);
+    fwrite($fileout, $line.'\n');
     fclose($fileout);
 
-    echo("Saved.\n");
     header("location:./submitted.html");
   }
 
