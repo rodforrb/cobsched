@@ -159,11 +159,13 @@ def shifts_from_file(filename):
     return shifts
 
 '''
-avail is of type Avail as defined above
+avail : Avail
     where locations and days are tuples of (0 or 1) booleans
     days is made of 7 3-tuples representing availability for
         morning/daytime/evening for each day
-shifts is of type Shifts
+shifts : Shifts
+returns schedule of type dict{str : list[shift]} ,
+    contracts of type dict{shift : list[str]}
 '''
 def run_graph(avail, shifts):
     # edges is a list of (u, v, capacity) tuples, derived as follows:
@@ -213,16 +215,17 @@ def run_graph(avail, shifts):
     max_flow = max_flow_edges(edges)
 
     # un-reducing back to a schedule
-    schedule = defaultdict(list)
+    schedule = defaultdict(list) # {person : [shifts]}
+    contracts = defaultdict(list) # {shift : [people]}
     for u,v,c in max_flow:
         # check if node is a person
         if u in node_to_name:
             # check if person is assigned to that shift
             if c > 0:
-                #schedule[node_to_name[u]].append(node_to_shift[v]) # {person : [shifts]}
-                schedule[node_to_shift[v]].append(node_to_name[u]) # {shift : [people]}
+                contracts[node_to_name[u]].append(node_to_shift[v])
+                schedule[node_to_shift[v]].append(node_to_name[u])
     
-    return schedule
+    return schedule, contracts
 
 def schedule_to_file(schedule, filename):
     # minimum lines for times
@@ -274,7 +277,7 @@ def schedule_to_file(schedule, filename):
 avail = avail_from_file("avail.csv")
 shifts = shifts_from_file("shifts.csv")
 
-schedule = run_graph(avail, shifts)
+schedule, contracts = run_graph(avail, shifts)
 
 print(schedule)
 
