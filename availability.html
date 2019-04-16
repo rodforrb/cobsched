@@ -2,14 +2,21 @@
 <html>
 <head>
   <meta content="text/html; charset=UTF-8;">
-<style>
+  <style>
+
+    html {
+      background-color: rgb(110, 181, 240);
+    }
+
     form {
+      background-color: #fff;
       /* Just to center the form on the page */
       margin: 40px auto;
       /* To see the outline of the form */
       padding: 1em;
-      border: 1px solid #CCC;
+      border: 1px solid rgb(133, 133, 133);
       border-radius: 1em;
+      max-width: 60em;
     }
 
     form div + div {
@@ -99,65 +106,71 @@
       padding-bottom: 4em;
     }
 
+    hr {
+      margin-top: 2em;
+      margin-bottom: 1.5em;
+    }
+
     .container {
-    display: block;
-    position: absolute;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
+      display: block;
+      position: absolute;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
 
-  /* Hide the browser's default checkbox */
-  .container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    width: 0;
-  }
+    /* Hide the browser's default checkbox */
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: 0;
+    }
 
-  /* Create a custom checkbox */
-  .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 4em;
-    width: 7em;
-    padding-bottom: auto;
-    background-color: #ddd;
-  }
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 4em;
+      width: 7em;
+      padding-bottom: auto;
+      background-color: rgb(209, 209, 209);
+    }
 
-  /* On mouse-over, add a grey background color */
-  .container:hover input ~ .checkmark {
-    background-color: #ccc;
-  }
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+      background-color: #ddd;
+    }
 
-  /* When the checkbox is checked, add a blue background */
-  .container input:checked ~ .checkmark {
-    background-color: #2196F3;
-  }
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+      background-color: #2196F3;
+    }
 
-  /* Create the checkmark/indicator (hidden when not checked) */
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
 
-  /* Show the checkmark when checked */
-  .container input:checked ~ .checkmark:after {
-    display: block;
-  }
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+      display: block;
+    }
 
-</style>
+  </style>
 
-<title>Availability Scheduling</title>
+  <title>Availability Scheduling</title>
 </head>
 
 <body>
 <form method="POST" action="./submit.php">
   <h1>COB Availability Schedule</h1>
+  <hr>
   <div>
     <table>
       <tr>
@@ -176,13 +189,15 @@
       </tr>
     </table>
   </div>
+  <hr>
   <div>
     <table style="table-layout: fixed;">
       <tr>
-        <th>Location:</td>
-        <th>Aldershot</td>
-        <th>Tansley</td>
-        <th>Centennial</td>
+        <th>Location:</th>
+        <th>Aldershot</th>
+        <th>Tansley</th>
+        <th>Centennial</th>
+        <td width="50%"></td>
       </tr>
       <tr>
         <td></td>
@@ -192,7 +207,6 @@
             <span class="checkmark"></span>
           </label>
         </td>
-
         <td class="tdbox">
           <label class="container">
             <input type=checkbox name="Tansley">
@@ -205,20 +219,20 @@
             <span class="checkmark"></span>
           </label>
         </td>
-      <tr></tr>
+      </tr>
+      </table>
+
+      <table style="table-layout: fixed;">
+        <hr>
       <tr>
         <th></th>
-      </tr>
-        <tr>
-          <th></th>
-          <th>Monday</th>
-          <th>Tuesday</th>
-          <th>Wednesday</th>
-          <th>Thursday</th>
-          <th>Friday</th>
-          <th>Saturday</th>
-          <th>Sunday</th>
-        </tr>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
       </tr>
 
       <tr>
