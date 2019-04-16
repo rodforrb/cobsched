@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $line = $line . check_get("Sun3");
 
     $fileout = fopen(".submissions.csv", "a") or die("Unable to open file!");
-    fwrite($fileout, $line.'\n');
+    fwrite($fileout, $line."\n");
     fclose($fileout);
 
     header("location:./submitted.html");
