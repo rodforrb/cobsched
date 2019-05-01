@@ -30,7 +30,7 @@
 <ul class="incremental">
 <li><p>some <em>x</em> number of people</p></li>
 <li><p>some <em>y</em> number of shifts</p></li>
-<li><p>each person may or may not be assigned to any shift; there are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>×</mo><msup><mn>2</mn><mi>y</mi></msup></mrow><annotation encoding="application/x-tex">x \times 2^y</annotation></semantics></math> possible schedules</p></li>
+<li><p>each person may or may not be assigned to any shift; there are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow></msup><annotation encoding="application/x-tex">2^{x+y}</annotation></semantics></math> possible schedules</p></li>
 <li><p>that’s a lot</p></li>
 <li><p>we have to account for matching shift availability too</p></li>
 </ul>
@@ -46,7 +46,7 @@
 <li><p>repeatedly displace and reassign people until all availability is satisfied</p></li>
 <li><p>repeat for every person</p></li>
 <li><p>upper bound of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mn>2</mn></msup><annotation encoding="application/x-tex">x^2</annotation></semantics></math> reassignments for an optimal schedule</p></li>
-<li><p><strong>Problem:</strong> if a perfect schedule does not exist, this algorithm may never terminate</p></li>
+<li><p><strong>Problem:</strong> if a perfect schedule does not exist, this algorithm may never find a good one.</p></li>
 </ul>
 </div>
 </div>
@@ -54,10 +54,10 @@
 <h1>Naive solutions - Guess and check (brute force)</h1>
 <div>
 <ul class="incremental">
-<li><p>check all <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>x</mi><mi>y</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">x \choose y</annotation></semantics></math> possible schedules</p></li>
+<li><p>check all <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow></msup><annotation encoding="application/x-tex">2^{x+y}</annotation></semantics></math> possible schedules</p></li>
 <li><p>check how many people are assigned to shifts that fit their availability</p></li>
 <li><p>keep the schedule with the most matches</p></li>
-<li><p><strong>Problem:</strong> for 100 employees and 300 shifts, there are 10^92 possible schedules (about a trillion schedules per atom in the observable universe)</p></li>
+<li><p><strong>Problem:</strong> we can easily have more combinations of schedules than there are atoms in the observable universe.</p></li>
 <li><p>we don’t have time for that</p></li>
 </ul>
 </div>

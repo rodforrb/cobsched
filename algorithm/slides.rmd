@@ -16,7 +16,7 @@ output:
 
 - some *y* number of shifts
 
-- each person may or may not be assigned to any shift; there are $x \times 2^y$ possible schedules
+- each person may or may not be assigned to any shift; there are $2^{x+y}$ possible schedules
 
 - that's a lot
 
@@ -40,7 +40,7 @@ output:
 
 - upper bound of $x^2$ reassignments for an optimal schedule
 
-- **Problem:** if a perfect schedule does not exist, this algorithm may never terminate
+- **Problem:** if a perfect schedule does not exist, this algorithm may never find a good one.
 
 :::
 
@@ -48,13 +48,13 @@ output:
 
 ::: incremental
 
-- check all $x \choose y$ possible schedules
+- check all $2^{x+y}$ possible schedules
 
 - check how many people are assigned to shifts that fit their availability
 
 - keep the schedule with the most matches
 
-- **Problem:** for 100 employees and 300 shifts, there are 10^92 possible schedules (about a trillion schedules per atom in the observable universe)
+- **Problem:** we can easily have more combinations of schedules than there are atoms in the observable universe.
 
 - we don't have time for that
 
