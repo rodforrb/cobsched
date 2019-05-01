@@ -18,7 +18,7 @@ PANDOC=/bin/pandoc
 
 PANDOC_OPTIONS=--standalone
 
-PANDOC_HTML_OPTIONS=-t slidy
+PANDOC_HTML_OPTIONS=-t slidy --slide-level=1 --mathml
 
 # Pattern-matching Rules
 
