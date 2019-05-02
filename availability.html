@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
+  <meta content="text/html; charset=UTF-8;">
+  <style>
+
+    html {
+      background-color: rgb(110, 181, 240);
+    }
+
     form {
+      background-color: #fff;
       /* Just to center the form on the page */
       margin: 40px auto;
       /* To see the outline of the form */
       padding: 1em;
-      border: 1px solid #CCC;
+      border: 1px solid rgb(133, 133, 133);
       border-radius: 1em;
+      max-width: 60em;
     }
 
     form div + div {
@@ -30,12 +38,29 @@
       /* To give the same size to all text fields */
       width: 100%;
       height: 50px;
-      align: center;
       box-sizing: border-box;
+      padding-left: 4px;
 
 
       /* To harmonize the look & feel of text field border */
       border: 1px solid #999;
+    }
+
+    input[type="text"]{
+      height: 30px;
+    }
+
+    input[class="name"]{
+      width: 15em;
+    }
+
+    input[name="hours"]{
+      width: 3em;
+    }
+
+    input[type="submit"]{
+      height: 2em;
+      width: 6em;
     }
     
     input:focus, textarea:focus {
@@ -64,12 +89,12 @@
 
     table {
       width: 100%;
+      max-width: 60em;
     }
     
     table, th, td {
-      /*border: 1px solid red; */
-      align: center;
-
+      /* border: 1px solid red; */
+      text-align: center;
     }
 
     th {
@@ -77,99 +102,282 @@
         padding: 10px;
     }
 
-</style>
+    .tdbox {
+      padding-bottom: 4em;
+    }
+
+    hr {
+      margin-top: 2em;
+      margin-bottom: 1.5em;
+      color: #ddd;
+    }
+
+    .container {
+      display: block;
+      position: absolute;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 4em;
+      width: 7em;
+      padding-bottom: auto;
+      background-color: rgb(209, 209, 209);
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+      background-color: #ddd;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+      background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+  </style>
+
+  <title>Availability Scheduling</title>
 </head>
 
 <body>
-<form method="post" action="./submit_form">
+<form method="POST" action="./submit.php">
+  <h1>COB Availability Schedule</h1>
+  <hr>
   <div>
     <table>
       <tr>
-        <td>Name:</td>
-        <td colspan="3"><input type=text id="name"></td>
+        <td style="padding: 0.5em">First name:</td>
+        <td colspan=2 width=0%><input type=text name="firstname" class="name" required="required"></td>
+        <td width=10%></td>
+        <td style="padding: 0.5em">Last name:</td>
+        <td colspan=2 width=0%><input type=text name="lastname" class="name" required="required"></td>
+        <td width=100%></td>
       </tr>
-
+      <tr height=6px></tr>
       <tr>
-        <td>Hours:</td>
-        <td colspan="3"><input type=text id="name"></td>
+        <td style="padding: 0.5em">Hours:</td>
+        <td width=35px><input type=text name="hours" required="required"></td>
+        <td colspan=6 width=100%></td>
       </tr>
-
+    </table>
+  </div>
+  <hr>
+  <div>
+    <table style="table-layout: fixed;">
       <tr>
-        <th>Location:</td>
-        <th>Aldershot</td>
-        <th>Tansley</td>
-        <th>Centennial</td>
+        <th>Location:</th>
+        <th>Aldershot</th>
+        <th>Tansley</th>
+        <th>Centennial</th>
+        <td width="50%"></td>
       </tr>
       <tr>
         <td></td>
-        <td><input type=checkbox class=location id="Aldershot"></td>
-        <td><input type=checkbox class=location id="Tansley"></td>
-        <td><input type=checkbox class=location id="Centennial"></td>
-      <tr></tr>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Aldershot">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Tansley">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Centennial">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+      </tr>
+      </table>
+
+      <table style="table-layout: fixed;">
+        <hr>
       <tr>
         <th></th>
-
-        <th colspan="5">Weekdays</th>
-        <th colspan="2">Weekends</th>
-      </tr>
-        <tr>
-          <th></th>
-          <th>Monday</th>
-          <th>Tuesday</th>
-          <th>Wednesday</th>
-          <th>Thursday</th>
-          <th>Friday</th>
-          <th>Saturday</th>
-          <th>Sunday</th>
-        </tr>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
       </tr>
 
       <tr>
         <th>Morning</th>
-        <td><input type=checkbox class=Monday></td>
-        <td><input type=checkbox class=Tuesday></td>
-        <td><input type=checkbox class=Wednesday></td>
-        <td><input type=checkbox class=Thursday></td>
-        <td><input type=checkbox class=Friday></td>
-        <td><input type=checkbox class=Saturday></td>
-        <td><input type=checkbox class=Sunday></td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Mon1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Tue1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Wed1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Thu1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Fri1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Sat1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Sun1">
+            <span class="checkmark"></span>
+          </label>
+        </td>
       </tr>
       <tr>
         <th>Daytime</th>
-        <td><input type=checkbox class=Monday></td>
-        <td><input type=checkbox class=Tuesday></td>
-        <td><input type=checkbox class=Wednesday></td>
-        <td><input type=checkbox class=Thursday></td>
-        <td><input type=checkbox class=Friday></td>
-        <td><input type=checkbox class=Saturday></td>
-        <td><input type=checkbox class=Sunday></td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Mon2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Tue2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Wed2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Thu2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Fri2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Sat2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Sun2">
+            <span class="checkmark"></span>
+          </label>
+        </td>
       </tr>
       <tr>
         <th>Evening</th>
-        <td><input type=checkbox class=Monday></td>
-        <td><input type=checkbox class=Tuesday></td>
-        <td><input type=checkbox class=Wednesday></td>
-        <td><input type=checkbox class=Thursday></td>
-        <td><input type=checkbox class=Friday></td>
-        <td><input type=checkbox class=Saturday></td>
-        <td><input type=checkbox class=Sunday></td>
-      </tr>
-      <tr>
-        <td><input type="submit"></td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Mon3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Tue3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Wed3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Thu3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Fri3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Sat3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td class="tdbox">
+          <label class="container">
+            <input type=checkbox name="Sun3">
+            <span class="checkmark"></span>
+          </label>
+        </td>
       </tr>
     </table>
-  </div>    
+  </div>  
+  <div>
+    <input type="submit" value="Submit" style="margin: 1em;">
+  </div>
+
 </form>
-
-<script>
-function check() {
-  document.getElementById("myCheck").checked = true;
-}
-
-function uncheck() {
-  document.getElementById("myCheck").checked = false;
-}
-</script>
 
 </body>
 </html> 

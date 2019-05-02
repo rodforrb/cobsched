@@ -6,6 +6,9 @@ April 2019
 import collections
 import csv
 from dataclasses import dataclass
+from collections import defaultdict
+from random import shuffle
+
 
 # https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
 
@@ -137,11 +140,10 @@ def avail_from_file(filename):
                     for t, timeslot in enumerate(line[5:]):
                         if timeslot == "1":
                             ts.append(titles[l+2] + titles[t+5])
-
-
-            avail.append(Avail(line[0],  # name
-                           int(line[1]), # hours
-                           ts.copy()))   # timeslots
+            shuffle(ts)
+            avail.append(Avail(line[0],     # name
+                           int(line[1]),    # hours
+                           ts.copy()))      # randomized timeslots
     return avail
 
 def shifts_from_file(filename):
@@ -157,17 +159,19 @@ def shifts_from_file(filename):
     return shifts
 
 '''
-avail is of type Avail as defined above
+avail : Avail
     where locations and days are tuples of (0 or 1) booleans
     days is made of 7 3-tuples representing availability for
         morning/daytime/evening for each day
-shifts is of type Shifts
+shifts : Shifts
+returns schedule of type dict{str : list[shift]} ,
+    contracts of type dict{shift : list[str]}
 '''
-def run_graph(avail, shifts): # TODO 
-    # edges is a list of (u, v, capacity) tuples
+def run_graph(avail, shifts):
+    # edges is a list of (u, v, capacity) tuples, derived as follows:
     # name becomes u
-    # every timeslot becomes separate v
-    # name -> slot capacities = 1 TODO number of hours?
+    # every timeslot becomes a separate v
+    # name -> slot capacities = 1 # TODO could do number of hours?
     # source -> name capacities = max allocation per person
     # slot -> sink capacities = inf
     edges = []
@@ -179,17 +183,21 @@ def run_graph(avail, shifts): # TODO
 
     name_to_node = {}
     node_to_name = {}
+    node_to_shift = {}
 
+    # reducing the problem to a flow diagram
+    # adding shift nodes and edges
     for s in shifts:
         if s.timeslot not in name_to_node:
             name_to_node[s.timeslot] = node_index
-            node_to_name[node_index] = s.timeslot
+            node_to_shift[node_index] = s.timeslot
 
         # attach timeslot to sink
-        edges.append((name_to_node[s.timeslot], 1, s.staff))
+        edges.append((name_to_node[s.timeslot], 1, int(s.staff)))
 
         node_index += 1 
 
+    # adding person nodes and edges
     for person in avail:
         # person has no node yet so make them one
         name_to_node[person.name] = node_index
@@ -203,20 +211,74 @@ def run_graph(avail, shifts): # TODO
 
         node_index += 1
 
-    print(edges)
+    # solve the flow network
+    max_flow = max_flow_edges(edges)
+
+    # un-reducing back to a schedule
+    schedule = defaultdict(list) # {person : [shifts]}
+    contracts = defaultdict(list) # {shift : [people]}
+    for u,v,c in max_flow:
+        # check if node is a person
+        if u in node_to_name:
+            # check if person is assigned to that shift
+            if c > 0:
+                contracts[node_to_name[u]].append(node_to_shift[v])
+                schedule[node_to_shift[v]].append(node_to_name[u])
+    
+    return schedule, contracts
+
+def schedule_to_file(schedule, filename):
+    # minimum lines for times
+    padding = (6, 6, 6)
+    with open(filename, 'w') as fileout:
+        # columns are going to be written horizontally, then transposed
+        lines = []
+        for location in ('Ald', 'Tans', 'Cent'):
+            lines.append([location])
+            for day in ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'):
+                line = [day]
+                for time in (1, 2, 3):
+                    line.append(['Morning', 'Daytime', 'Evening'][time-1])
+
+                    timeslot = location+str(time)+day
+                    rows = 0
+                    for person in schedule[timeslot]:
+                        line.append(person)
+                        rows += 1
+
+                    while rows < padding[time-1]:
+                        line.append('')
+                        rows += 1
+
+                    # minimum 1 empty line
+                    line.append('')
+
+                lines.append(line)
+
+        # transpose the 2d list/matrix and write
+        # the width becomes the number of lines
+        width = len(max(lines, key=len))
+        print("width:", width)
+
+        for i in range(width):
+
+            for j in range(len(lines)):
+                # the row still has elements to add
+                if i < len(lines[j]):
+                    fileout.write(lines[j][i] + ',')
+                else:
+                    # otherwise we need to pad the column
+                    fileout.write(',')
 
 
-
-
-# reverse the conversion
-def edges_to_avail(edges):
-    pass
+            fileout.write('\n')
 
 
 avail = avail_from_file("avail.csv")
 shifts = shifts_from_file("shifts.csv")
 
-schedule = run_graph(avail, shifts)
+schedule, contracts = run_graph(avail, shifts)
 
-#print(max_flow_edges(edges))
+print(schedule)
 
+schedule_to_file(schedule, "schedule.csv")

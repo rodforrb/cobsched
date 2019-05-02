@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Optimal Shift Scheduling</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="https://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Optimal Shift Scheduling</h1>
+  <p class="subtitle">An application of Network Flow algorithms</p>
+  <p class="date">April 2019</p>
+</div>
+<div id="problem" class="slide section level1">
+<h1>Problem</h1>
+<div>
+<ul class="incremental">
+<li><p>some <em>x</em> number of people</p></li>
+<li><p>some <em>y</em> number of shifts</p></li>
+<li><p>each person may or may not be assigned to any shift; there are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow></msup><annotation encoding="application/x-tex">2^{x+y}</annotation></semantics></math> possible schedules</p></li>
+<li><p>that’s a lot</p></li>
+<li><p>we have to account for matching shift availability too</p></li>
+</ul>
+</div>
+</div>
+<div id="naive-solutions---push-reassignment" class="slide section level1">
+<h1>Naive solutions - Push reassignment</h1>
+<div>
+<ul class="incremental">
+<li><p>for each person’s availability, iterate possible shifts in order</p></li>
+<li><p>if the shift is available, and their total hours is below some limit, assign the person to that shift</p></li>
+<li><p>if no shifts are available, and their total hours is below some minimum, unassign some person from some filled shift, and take their place</p></li>
+<li><p>repeatedly displace and reassign people until all availability is satisfied</p></li>
+<li><p>repeat for every person</p></li>
+<li><p>upper bound of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mn>2</mn></msup><annotation encoding="application/x-tex">x^2</annotation></semantics></math> reassignments for an optimal schedule</p></li>
+<li><p><strong>Problem:</strong> if a perfect schedule does not exist, this algorithm may never find a good one.</p></li>
+</ul>
+</div>
+</div>
+<div id="naive-solutions---guess-and-check-brute-force" class="slide section level1">
+<h1>Naive solutions - Guess and check (brute force)</h1>
+<div>
+<ul class="incremental">
+<li><p>check all <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow></msup><annotation encoding="application/x-tex">2^{x+y}</annotation></semantics></math> possible schedules</p></li>
+<li><p>check how many people are assigned to shifts that fit their availability</p></li>
+<li><p>keep the schedule with the most matches</p></li>
+<li><p><strong>Problem:</strong> we can easily have more combinations of schedules than there are atoms in the observable universe.</p></li>
+<li><p>we don’t have time for that</p></li>
+</ul>
+</div>
+</div>
+<div id="approximation-solution" class="slide section level1">
+<h1>Approximation solution</h1>
+<div>
+<ul class="incremental">
+<li><p>iterate availability and assign shifts in order</p></li>
+<li><p>if no shifts are available, assign a shift outside of the person’s availability</p></li>
+<li><p>only need to make <em>x</em> assignments</p></li>
+<li><p><strong>Pros:</strong> most impressive number of mismatches of all methods</p></li>
+<li><p><strong>Cons:</strong> we want to minimize the number of mismatches</p></li>
+</ul>
+</div>
+</div>
+<div id="network-flow" class="slide section level1">
+<h1>Network Flow</h1>
+<ul>
+<li><p>Now we have to step back.</p></li>
+<li><p>Suppose we have some nodes.</p></li>
+</ul>
+<p><img src="images/1-nodes1.png" /></p>
+</div>
+<div id="network-flow-1" class="slide section level1">
+<h1>Network Flow</h1>
+<ul>
+<li><p>Now we have to step back.</p></li>
+<li><p>Suppose we have some nodes.</p></li>
+<li><p>Lets give them values.</p></li>
+</ul>
+<p><img src="images/1-nodes2.png" /></p>
+</div>
+<div id="network-flow-2" class="slide section level1">
+<h1>Network Flow</h1>
+<ul>
+<li><p>Now we have to step back.</p></li>
+<li><p>Suppose we have some nodes.</p></li>
+<li><p>Lets give them values. And edges.</p></li>
+</ul>
+<p><img src="images/1-nodes3.png" /></p>
+<ul>
+<li>This is called a <em>graph</em></li>
+</ul>
+<div>
+<ul class="incremental">
+<li><p>We can <em>push</em> some amount of flow along these edges to move it to other nodes.</p></li>
+<li><p>This can tell us whether two nodes are connected along some path, but not much more.</p></li>
+</ul>
+</div>
+</div>
+<div id="network-flow-3" class="slide section level1">
+<h1>Network Flow</h1>
+<ul>
+<li>Suppose there are capacities on the edges restricting how much flow can be pushed along each one.</li>
+</ul>
+<p><img src="images/2-nodes3.png" /></p>
+<ul>
+<li><p>A natural problem is wanting to know the maximal amount of flow that can be pushed from one node to another.</p></li>
+<li><p>Here, we would like to know how much flow we could push from the source “s” to the sink “t”. (try it)</p></li>
+</ul>
+</div>
+<div id="network-flow-4" class="slide section level1">
+<h1>Network Flow</h1>
+<ul>
+<li>Suppose there are capacities on the edges restricting how much flow can be pushed along each one.</li>
+</ul>
+<p><img src="images/2-nodes2.png" /></p>
+<ul>
+<li><p>A natural problem is wanting to know the maximal amount of flow that can be pushed from one node to another.</p></li>
+<li><p>Here, we would like to know how much flow we could push from the source “s” to the sink “t”. (try it)</p></li>
+<li><p>It turns out to be 20.</p></li>
+</ul>
+</div>
+<div id="network-max-flow-solution" class="slide section level1">
+<h1>Network Max Flow solution</h1>
+<ul>
+<li><p>The <em>Max Flow</em> problem can be solved in a relatively short amount of time in relation to the number of nodes and edges.</p></li>
+<li><p>By carefully pushing flow along paths and filling the number of free paths available, a maximal solution can be found.</p></li>
+<li><p>This is implemented in the <a href="https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm">Edmonds-Karp algorithm</a>; the details of how it works are beyond this demo.</p></li>
+</ul>
+</div>
+<div id="okay-but-i-dont-care-about-network-flow" class="slide section level1">
+<h1>Okay but I don’t care about “network flow”</h1>
+<div>
+<ul class="incremental">
+<li>We need another tool before doing anything useful with this.</li>
+</ul>
+</div>
+</div>
+<div id="bipartite-matching" class="slide section level1">
+<h1>Bipartite matching</h1>
+<ul>
+<li>Now suppose we have a graph made up of two distinct groups of nodes, arranged into two columns.</li>
+</ul>
+<p><img src="images/3-bp1.png" /></p>
+</div>
+<div id="bipartite-matching-1" class="slide section level1">
+<h1>Bipartite matching</h1>
+<ul>
+<li>Let’s label the groups like this:</li>
+</ul>
+<p><img src="images/3-bp2.png" /></p>
+<div>
+<ul class="incremental">
+<li><p>Each person is given a node</p></li>
+<li><p>Each shift is also given a node</p></li>
+</ul>
+</div>
+</div>
+<div id="bipartite-matching-2" class="slide section level1">
+<h1>Bipartite matching</h1>
+<ul>
+<li>Let’s add edges to connect people to shifts they are available for:</li>
+</ul>
+<p><img src="images/3-bp3.png" /></p>
+</div>
+<div id="bipartite-matching-3" class="slide section level1">
+<h1>Bipartite matching</h1>
+<ul>
+<li>Is this starting to look familiar?</li>
+</ul>
+<p><img src="images/3-bp4.png" /></p>
+<div>
+<ul class="incremental">
+<li>The central edges have a capacity of 1, where a flow of 1 means the person is assigned to the shift, and a flow of 0 means they are not.</li>
+</ul>
+</div>
+</div>
+<div id="optimal-shift-scheduling" class="slide section level1">
+<h1>Optimal shift scheduling</h1>
+<ul>
+<li>Is this starting to look familiar?</li>
+</ul>
+<p><img src="images/3-bp5.png" /></p>
+<ul>
+<li><p>The central edges have a capacity of 1, where a flow of 1 means the person is assigned to the shift, and a flow of 0 means they are not.</p></li>
+<li><p>We can add edges from the source to each person, with capacities equal to the max number of shifts that can be assigned for that person.</p></li>
+</ul>
+</div>
+<div id="optimal-shift-scheduling-1" class="slide section level1">
+<h1>Optimal shift scheduling</h1>
+<ul>
+<li>Is this starting to look familiar?</li>
+</ul>
+<p><img src="images/3-bp6.png" /></p>
+<ul>
+<li><p>The central edges have a capacity of 1, where a flow of 1 means the person is assigned to the shift, and a flow of 0 means they are not.</p></li>
+<li><p>We can add edges from the source to each person, with capacities equal to the max number of shifts that can be assigned for that person.</p></li>
+<li><p>We can add edges from each shift to the sink, with capacities equal to the number of people to be assigned to that shift.</p></li>
+</ul>
+</div>
+<div id="optimal-shift-scheduling-2" class="slide section level1">
+<h1>Optimal shift scheduling</h1>
+<p><img src="images/3-bp6.png" /></p>
+<div>
+<ul class="incremental">
+<li><p>With the shift matching problem now set up as a flow network, it can be solved to find the maximum flow that can be pushed from <em>s</em> to <em>t</em>. We can use a modified version of the Edmonds-Karp algorithm which ensures a shift assignment does not exceed a person’s maximum number of hours.</p></li>
+<li><p>We can keep track of the central edges used to find the max flow. Central edges assigned a flow value of 1 indicate the person is assigned to the shift.</p></li>
+<li><p>By reversing the graph back into availability assignments, we obtain a schedule with a maximal number of matches between availabilty and shifts.</p></li>
+</ul>
+</div>
+</div>
+<div id="bonus" class="slide section level1">
+<h1>Bonus</h1>
+<p>By modifying the reduction to the flow network graph, we can implement additional features:</p>
+<ul>
+<li><p>Edges with different priority can be used, which can allow for <em>some</em> shifts to be suggested outside of a person’s stated availability in order to fill staff requirements for shifts.</p></li>
+<li><p>Shifts can be grouped by location to prioritize being assigned to the same location in the same day, or to prioritize being assigned one location over any other.</p></li>
+<li><p>Specific people can be given priority for being assigned their available shifts, even if it means decreasing the maximal number of matches.</p></li>
+<li><p>Soft priorities can be added to assign shifts to people in a specific order, but allow flexibility to accomodate people with limited availability.</p></li>
+<li><p>To re-schedule <em>some</em> of a schedule and keep some assignments, the process can be repeated with just the unassigned people and shifts.</p></li>
+</ul>
+</div>
+<div id="performance" class="slide section level1">
+<h1>Performance</h1>
+<ul>
+<li>Is this any better than the other methods?</li>
+</ul>
+</div>
+<div id="performance-1" class="slide section level1">
+<h1>Performance</h1>
+<ul>
+<li>Is this any better than the other methods?</li>
+</ul>
+<p><img src="images/4-time.png" /> (Yes)</p>
+<ul>
+<li>Optimal solution completed in 155 milliseconds (computers are fast).</li>
+</ul>
+</div>
+<div id="conclusion" class="slide section level1">
+<h1>Conclusion</h1>
+<ul>
+<li><p>That’s it.</p></li>
+<li><p>Press C for a table of contents.</p></li>
+<li><p>Have a cool day.</p></li>
+</ul>
+</div>
+</body>
+</html>
