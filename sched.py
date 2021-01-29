@@ -1,7 +1,6 @@
 '''
 Scheduling algorithm implementation
 Ben Rodford
-April 2019
 '''
 import collections
 import csv
